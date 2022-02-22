@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_flutter_clone/resources/auth_methods.dart';
 import 'package:instagram_flutter_clone/widgets/textfield_input.dart';
 import '../utils/colors.dart';
 
@@ -24,6 +25,8 @@ class _SignupScreenState extends State<SignupScreen> {
     _bioController.dispose();
     _userNameController.dispose();
   }
+
+  void selectImage(){}
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               bottom: -10,
                               left: 70,
                               child: IconButton(
-                                  onPressed: () => {},
+                                  onPressed: selectImage,
                                   icon: const Icon(Icons.add_a_photo)))
                         ],
                       ),
@@ -81,6 +84,15 @@ class _SignupScreenState extends State<SignupScreen> {
                           hintText: "Enter your bio"),
                       const SizedBox(height: 24),
                       InkWell(
+                        onTap: () async {
+                          print("we're in here");
+                          String response = await AuthMethods().signUpUser(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                              userName: _userNameController.text,
+                              bio: _bioController.text);
+                          print(response);
+                        },
                         child: Container(
                             child: const Text("Sign up"),
                             width: double.infinity,
@@ -100,13 +112,21 @@ class _SignupScreenState extends State<SignupScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                            child: const Text("Don't have an account?"),
+                            child: const Text("Have an account?"),
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                           ),
                           GestureDetector(
-                            onTap: () => {},
+                            onTap: () async {
+                              print("we're in here");
+                              // String response = await AuthMethods().signUpUser(
+                              //     email: _emailController.text,
+                              //     password: _passwordController.text,
+                              //     userName: _userNameController.text,
+                              //     bio: _bioController.text);
+                              // print(response);
+                            },
                             child: Container(
-                              child: const Text("Sign up",
+                              child: const Text("Sign in",
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               padding:
