@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram_flutter_clone/resources/auth_methods.dart';
+import 'package:instagram_flutter_clone/utils/utils.dart';
 import 'package:instagram_flutter_clone/widgets/textfield_input.dart';
 import '../utils/colors.dart';
 
@@ -16,6 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
+  Uint8List? _image;
 
   @override
   void dispose() {
@@ -26,7 +31,12 @@ class _SignupScreenState extends State<SignupScreen> {
     _userNameController.dispose();
   }
 
-  void selectImage(){}
+  void selectImage() async {
+    Uint8List image = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +56,16 @@ class _SignupScreenState extends State<SignupScreen> {
                       // circular widget to accept and show selected file
                       Stack(
                         children: [
-                          const CircleAvatar(
-                            radius: 54,
-                            backgroundImage: NetworkImage(
-                                "https://images.unsplash.com/photo-1645458320707-f8539c85490b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw3fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"),
-                          ),
+                          _image != null
+                              ? CircleAvatar(
+                                  radius: 54,
+                                  backgroundImage: MemoryImage(_image!),
+                                )
+                              : const CircleAvatar(
+                                  radius: 54,
+                                  backgroundImage: NetworkImage(
+                                      "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"),
+                                ),
                           Positioned(
                               bottom: -10,
                               left: 70,
