@@ -21,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
   Uint8List? _image;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -36,6 +37,25 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _image = image;
     });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String response = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        userName: _userNameController.text,
+        bio: _bioController.text,
+        file: _image!);
+    print(response);
+    setState(() {
+      _isLoading = false;
+    });
+    if (response != "success") {
+      showSnackBar(context, response);
+    }
   }
 
   @override
@@ -99,17 +119,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           hintText: "Enter your bio"),
                       const SizedBox(height: 24),
                       InkWell(
-                        onTap: () async {
-                          print("we're in here");
-                          String response = await AuthMethods().signUpUser(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                              userName: _userNameController.text,
-                              bio: _bioController.text);
-                          print(response);
-                        },
+                        onTap: signUpUser,
                         child: Container(
-                            child: const Text("Sign up"),
+                            child: _isLoading
+                                ? const CircularProgressIndicator.adaptive(
+                                    backgroundColor: primaryColor)
+                                : const Text("Sign up"),
                             width: double.infinity,
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -132,7 +147,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              print("we're in here");
                               // String response = await AuthMethods().signUpUser(
                               //     email: _emailController.text,
                               //     password: _passwordController.text,
