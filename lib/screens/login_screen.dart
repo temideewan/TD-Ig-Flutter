@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_flutter_clone/resources/auth_methods.dart';
+import 'package:instagram_flutter_clone/utils/utils.dart';
 import 'package:instagram_flutter_clone/widgets/textfield_input.dart';
 import '../utils/colors.dart';
 
@@ -13,12 +15,29 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+  }
+
+  void loginUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().loginUser(
+        email: _emailController.text, password: _passwordController.text);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (res != "success") {
+      showSnackBar(context, res);
+    }
   }
 
   @override
@@ -50,8 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           isPass: true),
                       const SizedBox(height: 24),
                       InkWell(
+                        onTap: loginUser,
                         child: Container(
-                            child: const Text("Login"),
+                            child: _isLoading
+                                ? const CircularProgressIndicator.adaptive(
+                                    backgroundColor: primaryColor)
+                                : const Text("Login"),
                             width: double.infinity,
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -73,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                           ),
                           GestureDetector(
-                            onTap: () => {},
+                            onTap: loginUser,
                             child: Container(
                               child: const Text("Sign up",
                                   style:
