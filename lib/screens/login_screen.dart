@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_flutter_clone/resources/auth_methods.dart';
+import 'package:instagram_flutter_clone/responsive/mobile_screen_layout.dart';
+import 'package:instagram_flutter_clone/responsive/web_screen_layout.dart';
+import 'package:instagram_flutter_clone/screens/signup_screen.dart';
 import 'package:instagram_flutter_clone/utils/utils.dart';
 import 'package:instagram_flutter_clone/widgets/textfield_input.dart';
+import '../responsive/responsive_layout_screen.dart';
 import '../utils/colors.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -37,7 +41,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (res != "success") {
       showSnackBar(context, res);
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+                webScreenLayout: WebScreenLayout(),
+                mobileScreenLayout: MobileScreenLayout(),
+              )));
     }
+  }
+
+  void navigateToSignup() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const SignupScreen()));
   }
 
   @override
@@ -96,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                           ),
                           GestureDetector(
-                            onTap: loginUser,
+                            onTap: navigateToSignup,
                             child: Container(
                               child: const Text("Sign up",
                                   style:
